@@ -1,52 +1,81 @@
 class InputParser:
     def __init__(self, fileName):
-        self.testFile = fileName  # test file er naam nilam
-        self.read_input()  # read_input method call korlam INPUT GULA READ KORTE
-        self.extract_tell_values()  # TELL VALUE GULA EXTRACT KORLAM
-        self.extract_ask_value()  # ASK VALUE / QUERY EXTRACT KORLAM
-        self.extract_clauses()  # TELL VALUE THEKE PROTI TA CLAUSE KE ALADA KORLAM
+        self.testFile = fileName
+        self.read_input()
+        self.extract_tell_values()
+        self.extract_ask_value()
+        self.extract_clauses()
 
-    def read_input(
-        self,
-    ):  # BASICALLY PROTI TA LINE BY LINE READ KORE INPUT VARIABLE E RAKHLAM
+    def read_input(self):
         with open(self.testFile, "r") as file:
             self.input = file.read()
-            file.close()
 
-    def extract_tell_values(
-        self,
-    ):  # SECOND LINE E TELL VALUES ASE SO SECOND LINE NILAM AND MAJHER SHOB SPACING SHORAY DILAM
+    def extract_tell_values(self):
         lines = self.input.split("\n")
         self.tell_values = lines[1].strip().replace(" ", "")
 
-    def extract_ask_value(
-        self,
-    ):  # FOURTH LINE E ASK VALUE ASE SO FOURTH LINE NILAM AND MAJHER SHOB SPACING SHORAY DILAM
+    def extract_ask_value(self):
         lines = self.input.split("\n")
         self.ask_value = lines[3].strip().replace(" ", "")
 
-    def extract_clauses(
-        self,
-    ):  # TELL VALUE ER LINE E PROTI TA CLAUSE KE ALADA KORLAM BASED ON SEMI COLON KARON PROTI CLAUSE ER POR SEMI COLON ASE
-        clauses = []
+    def extract_clauses(self):
         self.clauses = self.tell_values.split(";")
 
-    def construct_kb(
-        self,
-    ):  ## EI METHOD KNOWLEDGE BASE CREATE KORE , KNOWLEDGE BASE E PREMISE AND CONCLUSIONS KEMNE THAKBE SHETA DEFINE KORE
+    def construct_kb(self):
         kb = []
-        for clause in self.clauses:  ## proti ta clause e iterate kortesi
-            if "=>" in clause:  # jodi => sign thake
-                split_clause = clause.split(
-                    "=>"
-                )  # tokhon => er daaner ta conclusion and baamer ta premise
-                premise = split_clause[0].split(
-                    "&"
-                )  # premise er proti ta variable abar alda kortesi
-                conclusion = split_clause[1]  # conclusion ke alada korlam
-                kb.append((premise, conclusion))  # knowledge base e append korlam
+        for clause in self.clauses:
+
+            if "=>" in clause:
+                split_clause = clause.split("=>")
+                premise = split_clause[0].split("&")
+                conclusion = split_clause[1]
+                kb.append((premise, conclusion))
             else:
                 if clause != "":
                     kb.append(([], clause))
 
         return kb
+
+    def construct_kb_truth_table(self):
+        kb = []
+        for clause in self.clauses:
+
+            if len(clause) == 0:
+                continue
+            parsed_clause = self.parse_expression(clause)
+            kb.append(parsed_clause)
+
+        return kb
+
+    def parse_expression(self, expression):
+        tokens = []
+        i = 0
+        while i < len(expression):
+            if expression[i] in ["&", "~", "(", ")"]:
+                tokens.append(expression[i])
+                i += 1
+            elif expression[i] == "|":
+                tokens.append("||")
+                i += 2
+            elif (
+                expression[i] == "="
+                and i + 1 < len(expression)
+                and expression[i + 1] == ">"
+            ):
+                tokens.append("=>")
+                i += 2
+            elif (
+                expression[i] == "<"
+                and i + 2 < len(expression)
+                and expression[i + 1] == "="
+                and expression[i + 2] == ">"
+            ):
+                tokens.append("<=>")
+                i += 3
+            else:
+                var = []
+                while i < len(expression) and expression[i].isalnum():
+                    var.append(expression[i])
+                    i += 1
+                tokens.append("".join(var))
+        return tokens

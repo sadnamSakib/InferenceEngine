@@ -20,11 +20,12 @@ def main():
         testFile
     )  # inputParser class er object banailam and constructor e testFile path pass kore dilam
     kb = inputParser.construct_kb()
+    ktb = inputParser.construct_kb_truth_table()
     start_time = time.perf_counter()
     start_mem = get_memory_usage()
     if method == "TT":  # method TT hole truth table class er object banailam
         tt = TruthTable(
-            kb
+            ktb
         )  # kb method call korlam , ei method call korle basically knowledge base create hoy
         tt.solve(inputParser.ask_value)  # ask value pass kore solve method call korlam
         end_time = time.perf_counter()
