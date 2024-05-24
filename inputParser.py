@@ -48,5 +48,5 @@ class InputParser:
             else:
                 if clause != "":
                     kb.append(([], clause))
-        print(kb)
+
         return kb

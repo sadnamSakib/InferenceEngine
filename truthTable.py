@@ -38,8 +38,6 @@ class TruthTable:
             row = dict(zip(variables, combination))
             self.truth_table.append(row)
 
-        print(self.truth_table[:5])
-
     def solve(
         self, query
     ):  # ei function e ekta query diye dibo and eta true or false hobe and true hoile koybar tru hoise sheta dekhabo

@@ -53,6 +53,6 @@ class ForwardChaining:
             print("YES: ", end=" ")
             for symbol in self.entailed_symbols:
                 print(symbol + ",", end=" ")
-            print()
+
         else:
             print("NO")
