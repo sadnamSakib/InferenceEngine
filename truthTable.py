@@ -137,16 +137,15 @@ class TruthTable:
 
     def solve(self, query):
         entailment = 0
-
+        query_tokens = self.parse_expression(query)
         for row in self.truth_table:
-
             valid = True
             for clause in self.kb:
 
                 valid = self.entail(row, clause)
                 if not valid:
                     break
-            if valid and self.entail(row, query):
+            if valid and self.entail(row, query_tokens):
                 entailment += 1
 
         if entailment:

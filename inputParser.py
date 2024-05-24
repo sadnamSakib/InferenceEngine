@@ -17,6 +17,7 @@ class InputParser:
     def extract_ask_value(self):
         lines = self.input.split("\n")
         self.ask_value = lines[3].strip().replace(" ", "")
+        self.ask_value = self.parse_expression(self.ask_value)
 
     def extract_clauses(self):
         self.clauses = self.tell_values.split(";")
